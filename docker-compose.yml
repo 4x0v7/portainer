@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    hostname: portainer
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      # - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - portainer_data:/data
+    ports:
+      - "127.0.0.1:9000:9443"
+      # - 0.0.0.0:9000:9443
+      # - "100.88.184.87:9000:9443"
+    networks:
+      - internal_net
+
+volumes:
+  portainer_data:
+    external: false
+
+networks:
+  internal_net:
+
+# Equivalent docker run command
+#
+# docker run -d -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data -p 9000:9443 --name portainer --restart always portainer/portainer-ce
+
+# NOTE: below netsh commands must be run from an admin command prompt
+
+# Delete any existing port mapping
+#
+# Restart-Service iphlpsvc -Force; netsh interface portproxy delete v4tov4 listenport=9000 listenaddress=100.88.184.87
+
+# Add a port mapping that listens on the Tailscale IP of this machine, and forwards traffic to localhost
+# NOTE: 'portproxy add' adds a mapping, 'portproxy set' adds or modifies (it's an idempotent command)
+#
+# Restart-Service iphlpsvc -Force; netsh interface portproxy set v4tov4 listenport=9000 listenaddress=100.88.184.87 connectaddress=127.0.0.1 connectport=9000
+
+# Show all current port mappings
+# NOTE: this command does not need admin
+#
+# netsh interface portproxy show all

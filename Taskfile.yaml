@@ -1,0 +1,41 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars: {}
+
+tasks:
+  default:
+    desc: Print all available tasks
+    cmds:
+      - task -a
+    silent: true
+
+  up:
+    desc: Docker compose up Portainer
+    cmds:
+      - docker compose up -d
+
+  down:
+    desc: Docker compose down Portainer
+    cmds:
+      - docker compose down
+
+  tailfwd:
+    desc: Forward port to localhost with the help of iphlpsvc [RunAsAdmin]
+    cmds:
+      - powershell -c Restart-Service iphlpsvc -Force;
+      - >-
+        netsh interface portproxy set v4tov4
+        listenport=9000 listenaddress=100.88.184.87
+        connectport=9000 connectaddress=127.0.0.1
+      - powershell -c Restart-Service iphlpsvc -Force;
+
+  tailfwd:null:
+    desc: Delete forwarded port to localhost with the help of iphlpsvc [RunAsAdmin]
+    cmds:
+      - powershell -c Restart-Service iphlpsvc -Force;
+      - >-
+        netsh interface portproxy delete v4tov4
+        listenport=9000 listenaddress=100.88.184.87
+      - powershell -c Restart-Service iphlpsvc -Force;
