@@ -21,6 +21,11 @@ tasks:
     cmds:
       - docker compose down
 
+  pull:
+    desc: Pull latest version
+    cmds:
+      - docker compose pull
+
   tailfwd:
     desc: Forward port to localhost with the help of iphlpsvc [RunAsAdmin]
     cmds:
