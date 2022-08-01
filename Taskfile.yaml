@@ -2,7 +2,9 @@
 
 version: '3'
 
-vars: {}
+vars:
+  HOST_PORT: 9000
+  TAILSCALE_IP: 100.88.184.87
 
 tasks:
   default:
@@ -32,8 +34,8 @@ tasks:
       - powershell -c Restart-Service iphlpsvc -Force;
       - >-
         netsh interface portproxy set v4tov4
-        listenport=9000 listenaddress=100.88.184.87
-        connectport=9000 connectaddress=127.0.0.1
+        listenport={{.HOST_PORT}} listenaddress={{.TAILSCALE_IP}}
+        connectport={{.HOST_PORT}} connectaddress=127.0.0.1
       - powershell -c Restart-Service iphlpsvc -Force;
 
   tailfwd:null:
@@ -42,5 +44,5 @@ tasks:
       - powershell -c Restart-Service iphlpsvc -Force;
       - >-
         netsh interface portproxy delete v4tov4
-        listenport=9000 listenaddress=100.88.184.87
+        listenport={{.HOST_PORT}} listenaddress={{.TAILSCALE_IP}}
       - powershell -c Restart-Service iphlpsvc -Force;
